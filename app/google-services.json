@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "302683739898",
+    "project_id": "myeventsapp-dfd47",
+    "storage_bucket": "myeventsapp-dfd47.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:302683739898:android:5df12077210309e5da9b43",
+        "android_client_info": {
+          "package_name": "com.example.myeventsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "302683739898-36dljrhh0nvsnpgv0e17fi6p69kom409.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.myeventsapp",
+            "certificate_hash": "3743fb6d88d4d1701828831c95fcb1362392133b"
+          }
+        },
+        {
+          "client_id": "302683739898-t8e6mjs02g7ler0kelfjsimojb7khpjh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4HnNkgmIM5Epwhw7Q5JRl4tjBVQ4avQM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "302683739898-t8e6mjs02g7ler0kelfjsimojb7khpjh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
