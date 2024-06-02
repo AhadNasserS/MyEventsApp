@@ -1,6 +1,7 @@
 package com.example.myeventsapp
 
 import android.content.Intent
+import androidx.compose.ui.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -18,10 +19,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,11 +35,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import androidx.compose.ui.graphics.BlendMode.Companion.Screen
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -68,46 +74,55 @@ class MainActivity : ComponentActivity() {
             val authViewModel: AuthViewModel = hiltViewModel()
             MyEventsAppTheme {
                 val navController = rememberNavController()
+                val config = LocalConfiguration.current
                 var showBottomBar by rememberSaveable { mutableStateOf(false) }
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
+
                 showBottomBar = when (navBackStackEntry?.destination?.route) {
                     Screens.MainApp.Home.route -> true
-                    Screens.MainApp.AddScreen.route -> true
                     Screens.MainApp.TaskByDate.route -> true
                     Screens.MainApp.CategoryScreen.route -> true
                     Screens.MainApp.StaticsScreen.route -> true
                     else -> false
                 }
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .semantics {
-                            contentDescription = "MyScreen"
-                        },
-                ) { //paddingValues ->
-                    Box(
+                CompositionLocalProvider(
+                    LocalLayoutDirection provides
+                            if (config.layoutDirection == LayoutDirection.Rtl.ordinal)
+                                LayoutDirection.Rtl
+                            else LayoutDirection.Ltr
+                ) {
+                    Scaffold(
                         modifier = Modifier
                             .fillMaxSize()
-                        //   .padding(paddingValues)
-                    ) {
-                        if (authViewModel.error.value.isNotEmpty()) {
-                            Snackbar(
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .fillMaxWidth(),
-                                containerColor = androidx.compose.ui.graphics.Color.Red.copy(0.5f)
-                            ) {
-                                Text(text = authViewModel.error.value)
+                            .semantics {
+                                contentDescription = "MyScreen"
+                            },
+                    ) { paddingValues ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues)
+                        ) {
+
+                            if (authViewModel.error.value.isNotEmpty()) {
+                                Snackbar(
+                                    modifier = Modifier
+                                        .padding(16.dp)
+                                        .fillMaxWidth(),
+//                                    containerColor = Color.Red.copy(0.5f)
+                                ) {
+                                    Text(
+                                        text = authViewModel.error.value
+                                    )
+                                }
                             }
+                            EventsAppNavigation(authViewModel, navController)
                         }
-                        EventsAppNavigation(authViewModel, navController)
+                        if (showBottomBar) {
+                            BottomBar(navController)
+                        }
                     }
-                    if (showBottomBar) {
-                        BottomBar(navController)
-                    }
-
                 }
-
             }
         }
     }

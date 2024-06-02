@@ -1,9 +1,19 @@
 package com.example.myeventsapp.data.entity
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Build
+import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Done
+import androidx.compose.ui.graphics.toArgb
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
+import com.example.myeventsapp.getIconName
+import com.example.myeventsapp.ui.theme.LightBlue
+import com.example.myeventsapp.ui.theme.LightGreen
+import com.example.myeventsapp.ui.theme.LightPurple
+import com.example.myeventsapp.ui.theme.LightRed
 @Entity(tableName = "task_table")
 data class Task(
     @PrimaryKey(autoGenerate = true)
@@ -16,18 +26,35 @@ data class Task(
     @ColumnInfo(name = "date")
     val date: String,
     @ColumnInfo(name = "time_from")
-    val timeFrom: String? = " ",
+    val timeFrom: String?,
     @ColumnInfo(name = "time_to")
-    val timeTo: String? = "",
+    val timeTo: String?,
     @ColumnInfo(name = "task_type")
     val taskType: String,
     @ColumnInfo(name = "task_tag_name")
-    val tagName: String= "",
+    val tagName: String = ""
 )
 
-enum class TaskType(val type: String){
-    Pending("Pending"),
-    OnGoing("On Going"),
-    Cancelled("Cancelled"),
-    Competed("Competed"),
+enum class TaskType(
+    val type: String,
+    val color: String,
+    val icon: String,
+    val isSelected: Boolean? = false
+) {
+    Pending("Pending", LightPurple.toArgb().toString(), getIconName(Icons.Outlined.DateRange)),
+    OnGoing("On Going", LightGreen.toArgb().toString(), getIconName(Icons.Outlined.Build)),
+    Cancelled("Cancelled", LightRed.toArgb().toString(), getIconName(Icons.Outlined.Delete)),
+    Completed("Completed", LightBlue.toArgb().toString(), getIconName(Icons.Outlined.Done)),
 }
+
+
+data class SearchResults(
+    val taskResults: List<TaskWithTags>,
+    val tagResults: List<TagWithTaskLists>
+)
+
+
+data class AggregatedData(
+    val date: String,
+    val totalDuration: Int
+)

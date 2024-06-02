@@ -1,10 +1,10 @@
 package com.example.myeventsapp.component
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,25 +15,30 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.myeventsapp.navigation.BottomNavigationItem
 import com.example.myeventsapp.navigation.Screens
 import com.example.myeventsapp.navigation.popUpToTop
 import com.example.myeventsapp.ui.theme.PrimaryColor
 
 @Composable
-fun BottomBar(navController: NavHostController){
-    val navigationSelectedItem = rememberSaveable{ mutableIntStateOf(0) }
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .padding(12.dp),
+fun BottomBar(navController: NavHostController) {
+
+    val navigationSelectedItem = rememberSaveable {
+        mutableIntStateOf(0)
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(12.dp),
         contentAlignment = Alignment.BottomCenter
-    )
-    {
+    ) {
         Row(
             modifier = Modifier
                 .shadow(16.dp)
@@ -42,9 +47,8 @@ fun BottomBar(navController: NavHostController){
                 .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
-
         ) {
-            Screens.BottomNavigationItem().bottomNavigationItem()
+            BottomNavigationItem().bottomNavigationItems()
                 .forEachIndexed { index, bottomNavigationItem ->
                     if (bottomNavigationItem.route == Screens.MainApp.AddScreen.route) {
                         Icon(
@@ -52,13 +56,12 @@ fun BottomBar(navController: NavHostController){
                             "",
                             modifier = Modifier
                                 .size(75.dp)
+                                .semantics {
+                                    testTag = "Navigate To Add Screen"
+                                }
                                 .clickable {
-                                    navigationSelectedItem.intValue = index
-                                    navController.navigate(bottomNavigationItem.route) {
-                                        popUpToTop(navController)
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
+                                    navigationSelectedItem.value = index
+                                    navController.navigate(bottomNavigationItem.route)
                                 },
                             tint = PrimaryColor
                         )
@@ -67,23 +70,24 @@ fun BottomBar(navController: NavHostController){
                             bottomNavigationItem.icon,
                             "",
                             modifier = Modifier
-                                .size(75.dp)
                                 .clickable {
-                                    navigationSelectedItem.intValue = index
+                                    navigationSelectedItem.value = index
                                     navController.navigate(bottomNavigationItem.route) {
                                         popUpToTop(navController)
                                         launchSingleTop = true
                                         restoreState = true
                                     }
                                 }
-                                .padding(12.dp),
-                            tint = if (navigationSelectedItem.intValue == index) PrimaryColor else Color.Gray.copy(
+                                .padding(12.dp)
+                                .semantics {
+                                    testTag = bottomNavigationItem.route
+                                },
+                            tint = if (navigationSelectedItem.value == index) PrimaryColor else Color.Gray.copy(
                                 0.5f
                             )
                         )
                     }
                 }
         }
-
     }
 }

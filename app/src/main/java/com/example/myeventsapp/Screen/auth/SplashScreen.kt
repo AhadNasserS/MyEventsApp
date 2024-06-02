@@ -60,6 +60,7 @@ fun SplashScreen(navController: NavController) {
             Text(text = "Login")
         }
         Text(
+
             text = "Sign in ",
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
